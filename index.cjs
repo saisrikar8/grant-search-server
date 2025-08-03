@@ -89,7 +89,7 @@ app.post('/api/search-grants', async (req, res) => {
 
         const completion = await openai.chat.completions.create({
             model: 'gpt-4o',
-            temperature: 0.5,
+            temperature: 0.9,
             messages,
         });
 
