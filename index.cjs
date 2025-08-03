@@ -76,14 +76,14 @@ app.post('/api/search-grants', async (req, res) => {
             {
                 role: 'system',
                 content:
-                    'You are a strategic advisor for people applying to U.S. federal grants. Provide creative and actionable advice based on the following list of grant opportunities.',
+                    `You are a strategic advisor helping people win U.S. federal grants.\n\n` +
+                    `The user is searching for grants related to: "${query}".\n\n` +
+                    `Here are 50 relevant grants:\n${titlesAndAgencies}\n\n` +
+                    `Based on this, your job is to give 3 creative, high-level strategies someone could use to increase their odds of winning one of these.`,
             },
             {
                 role: 'user',
-                content:
-                    `Search term: "${query}"\n\n` +
-                    `Here are the grants:\n${titlesAndAgencies}\n\n` +
-                    `Given this list, give 3 high-level strategies someone could use to increase their chances of getting one of these grants. Be creative but specific.`,
+                content: `What strategies would you suggest to someone interested in these types of grants?`,
             },
         ];
 
@@ -102,6 +102,7 @@ app.post('/api/search-grants', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 
 app.listen(PORT, () => {
