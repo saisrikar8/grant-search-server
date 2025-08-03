@@ -50,7 +50,7 @@ app.post('/api/search-grants', async (req, res) => {
                 Accept: 'application/json',
             },
             body: JSON.stringify({
-                keyword: query,
+                keyword: "",
                 oppStatuses: 'forecasted|posted',
                 sortBy: 'openDate|desc',
                 rows: 50,
