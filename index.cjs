@@ -91,6 +91,7 @@ app.post('/api/search-grants', async (req, res) => {
             model: 'gpt-4o',
             temperature: 0.9,
             messages,
+            max_tokens: 25
         });
 
         const aiSuggestions = completion.choices[0].message.content.trim();
