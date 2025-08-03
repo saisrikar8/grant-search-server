@@ -45,12 +45,15 @@ app.post('/api/search-grants', async (req, res) => {
     try {
         const grantsGovResponse = await fetch('https://api.grants.gov/v1/api/search2', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
             body: JSON.stringify({
                 keyword: query,
                 oppStatuses: 'forecasted|posted',
                 sortBy: 'openDate|desc',
-                rows: 5,
+                rows: 50,
                 startRecordNum: 0,
             }),
         });
@@ -63,36 +66,30 @@ app.post('/api/search-grants', async (req, res) => {
         const data = await grantsGovResponse.json();
 
         const grants = data.data?.oppHits?.map(g => ({
-            id: g.id,
             title: g.title,
             agency: g.agency,
-            openDate: g.openDate,
-            closeDate: g.closeDate,
-            link: `https://www.grants.gov/search-results-detail/${encodeURIComponent(g.id)}`,
         })) || [];
 
-        const grantSummaries = grants.length
-            ? grants.map(g => `- ${g.title} by ${g.agency}, closes on ${g.closeDate || 'TBD'}`).join('\n')
-            : 'No grants found';
+        const titlesAndAgencies = grants.map((g, i) => `${i + 1}. "${g.title}" — ${g.agency}`).join('\n');
 
         const messages = [
             {
                 role: 'system',
                 content:
-                    "You are a grant application strategist helping students and researchers identify high-potential opportunities and give personalized advice.",
+                    'You are a strategic advisor for people applying to U.S. federal grants. Provide creative and actionable advice based on the following list of grant opportunities.',
             },
             {
                 role: 'user',
                 content:
                     `Search term: "${query}"\n\n` +
-                    `Matching grants:\n${grantSummaries}\n\n` +
-                    `For these specific opportunities, give 3 distinct and creative strategies someone could follow to maximize their chances of success. Include practical steps or overlooked tips.`,
+                    `Here are the grants:\n${titlesAndAgencies}\n\n` +
+                    `Given this list, give 3 high-level strategies someone could use to increase their chances of getting one of these grants. Be creative but specific.`,
             },
         ];
 
-
         const completion = await openai.chat.completions.create({
             model: 'gpt-4o',
+            temperature: 0.5,
             messages,
         });
 
@@ -105,6 +102,7 @@ app.post('/api/search-grants', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
