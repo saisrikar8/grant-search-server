@@ -87,7 +87,7 @@ app.post('/api/search-grants', async (req, res) => {
         const completion = await openai.chat.completions.create({
             model: 'gpt-4.1-mini',
             messages,
-            temperature: 0.7,
+            temperature: 0.9,
             max_tokens: 250,
         });
 
