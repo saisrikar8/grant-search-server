@@ -41,7 +41,7 @@ app.post('/api/search-grants', async (req, res) => {
 
     try {
         // Call your existing proxy API to search grants
-        const response = await fetch('http://localhost:3000/api/opportunities', {
+        const response = await fetch('https://grant-search-server.vercel.app/api/opportunities', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
