@@ -94,8 +94,6 @@ app.post('/api/search-grants', async (req, res) => {
         const completion = await openai.chat.completions.create({
             model: 'gpt-4o',
             messages,
-            temperature: 0.9,
-            max_tokens: 250,
         });
 
         const aiSuggestions = completion.choices[0].message.content.trim();
