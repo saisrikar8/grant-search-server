@@ -76,16 +76,23 @@ app.post('/api/search-grants', async (req, res) => {
             : 'No grants found';
 
         const messages = [
-            { role: 'system', content: 'You are a helpful grant advisor.' },
+            {
+                role: 'system',
+                content:
+                    "You are a grant application strategist helping students and researchers identify high-potential opportunities and give personalized advice.",
+            },
             {
                 role: 'user',
-                content: `User searched for: "${query}"\nHere are some matching grants:\n${grantSummaries}\n` +
-                    'Please provide 3 personalized suggestions on how to pursue these grants successfully.',
+                content:
+                    `Search term: "${query}"\n\n` +
+                    `Matching grants:\n${grantSummaries}\n\n` +
+                    `For these specific opportunities, give 3 distinct and creative strategies someone could follow to maximize their chances of success. Include practical steps or overlooked tips.`,
             },
         ];
 
+
         const completion = await openai.chat.completions.create({
-            model: 'gpt-4.1-mini',
+            model: 'gpt-4o',
             messages,
             temperature: 0.9,
             max_tokens: 250,
